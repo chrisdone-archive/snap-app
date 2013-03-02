@@ -28,7 +28,7 @@ import Data.ByteString.UTF8       (toString)
 import Data.Maybe
 import Network.URI
 import Data.Text.Lazy             (Text,toStrict)
-import Database.PostgreSQL.Base   (withPoolConnection)
+import Database.PostgreSQL.Base   (withPoolConnection,withTransaction)
 import Database.PostgreSQL.Simple (Pool)
 import Safe                       (readMay)
 import Text.Blaze                 (Html)

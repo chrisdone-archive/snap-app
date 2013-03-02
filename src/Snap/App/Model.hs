@@ -11,6 +11,8 @@ module Snap.App.Model
   ,single
   ,singleNoParams
   ,queryNoParams
+  ,processQuery
+  ,queryProcessed
   ,exec
   ,DB.Only(..))
   where
@@ -19,7 +21,7 @@ import           Control.Monad.Env                       (env)
 import           Control.Monad.Reader
 import           Data.String
 import           Database.PostgreSQL.Base   (withPoolConnection,withTransaction)
-import           Database.PostgreSQL.Simple              (Only(..))
+import           Database.PostgreSQL.Simple              (Only(..),ProcessedQuery,Query)
 import qualified Database.PostgreSQL.Simple              as DB
 import           Database.PostgreSQL.Simple (Pool)
 import           Database.PostgreSQL.Simple.QueryParams
@@ -38,6 +40,17 @@ runDB st conf pool mdl = do
 -- | Run a model action from within a controller.
 model :: AppLiftModel c s => Model c s a -> Controller c s a
 model = liftModel
+
+-- | A version of 'query' that does not perform query substitution.
+queryProcessed :: (QueryResults r) => ProcessedQuery r -> Model c s [r]
+queryProcessed pq = do
+  conn <- env modelStateConn
+  Model $ ReaderT (\_ -> DB.queryProcessed conn pq)
+
+-- | Process a query for later use.
+processQuery :: (QueryParams q,QueryResults r) => Query -> q -> Model c s (ProcessedQuery r)
+processQuery template qs = do
+  Model $ ReaderT (\_ -> DB.processQuery template qs)
 
 -- | Query with some parameters.
 query :: (QueryParams ps,QueryResults r) => [String] -> ps -> Model c s [r]
