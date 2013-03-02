@@ -38,10 +38,11 @@ import Text.Blaze.Renderer.Text   (renderHtml)
 runHandler :: s -> c -> Pool -> Controller c s () -> Snap ()
 runHandler st conf pool ctrl = do
   withPoolConnection pool $ \conn -> do
-    let state = ControllerState conf conn st
-    -- Default to HTML, can be overridden.
-    modifyResponse $ setContentType "text/html"
-    runReaderT (runController ctrl) state
+    withTransaction conn $ do
+      let state = ControllerState conf conn st
+      -- Default to HTML, can be overridden.
+      modifyResponse $ setContentType "text/html"
+      runReaderT (runController ctrl) state
 
 -- | Strictly renders HTML to Text before outputting it via Snap.
 --   This ensures that any lazy exceptions are caught by the Snap

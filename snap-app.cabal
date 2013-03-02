@@ -1,5 +1,5 @@
 name:                snap-app
-version:             0.1.2
+version:             0.1.3
 synopsis:            Simple modules for writing apps with Snap, abstracted from hpaste.
 homepage:            Simple modules for writing apps with Snap, abstracted from hpaste.
 license:             BSD3
