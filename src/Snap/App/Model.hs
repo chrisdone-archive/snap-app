@@ -6,6 +6,7 @@
 
 module Snap.App.Model
   (model
+  ,runDB
   ,query
   ,single
   ,singleNoParams
@@ -15,16 +16,25 @@ module Snap.App.Model
   where
 
 import           Control.Monad.Env                       (env)
-
 import           Control.Monad.Reader
 import           Data.String
+import           Database.PostgreSQL.Base   (withPoolConnection)
 import           Database.PostgreSQL.Simple              (Only(..))
 import qualified Database.PostgreSQL.Simple              as DB
+import           Database.PostgreSQL.Simple (Pool)
 import           Database.PostgreSQL.Simple.QueryParams
 import           Database.PostgreSQL.Simple.QueryResults
 import           Snap.App.Types
 
--- | Run a model action.
+-- | Run a model action at the top-level.
+runDB :: s -> c -> Pool -> Model c s () -> IO ()
+runDB st conf pool mdl = do
+  withPoolConnection pool $ \conn -> do
+    let state = ModelState conn st conf
+    -- Default to HTML, can be overridden.
+    runReaderT (runModel mdl) state
+
+-- | Run a model action from within a controller.
 model :: AppLiftModel c s => Model c s a -> Controller c s a
 model = liftModel
 
