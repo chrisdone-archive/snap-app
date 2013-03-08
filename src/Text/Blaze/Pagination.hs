@@ -4,9 +4,11 @@
 
 -- | Simple pagination support for blaze.
 
-module Text.Blaze.Pagination where
+module Text.Blaze.Pagination
+  (pagination,PN(..))
+  where
 
-import           Data.Foldable
+import           Data.Foldable hiding (foldr)
 import           Control.Monad hiding (forM_)
 import           Data.Monoid.Operator
 import           Data.Pagination
@@ -30,13 +32,13 @@ pagination PN{pnURI=uri, pnPn=pn@Pagination{..}, pnResultsPerPage=perPage} =
     chooser
 
   where description = do
-         span !. "description" $ do
+         p !. "description" $ do
            "Showing "
-           toHtml ((pnCurrentPage-1)*pnPerPage + 1)
+           toHtml (showCount ((pnCurrentPage-1)*pnPerPage + 1))
            "–"
-           toHtml (min pnTotal (pnCurrentPage * pnPerPage))
+           toHtml (showCount (min pnTotal (pnCurrentPage * pnPerPage)))
            " of "
-           toHtml (pnTotal)
+           toHtml (showCount (pnTotal))
            " results"
 
         resultsPerPage perPage = do
@@ -45,8 +47,10 @@ pagination PN{pnURI=uri, pnPn=pn@Pagination{..}, pnResultsPerPage=perPage} =
             forM_ perPage $ \count ->
               span !. "per-page-choice" $ do
                 let theclass = if count == pnPerPage then "current" else ""
-                a !. theclass ! hrefSet uri (param "per_page") (show count) $
-                  toHtml (show count)
+                if count == pnPerPage
+                   then a !. theclass $ toHtml (show count)
+                   else a !. theclass ! hrefSet uri (param "per_page") (show count) $
+                          toHtml (show count)
 
         chooser = do
           div !. "pages" $ do
@@ -59,13 +63,13 @@ pagination PN{pnURI=uri, pnPn=pn@Pagination{..}, pnResultsPerPage=perPage} =
               let w = 10 :: Integer
                   start = max 1 (pnCurrentPage - (w // 2))
                   end = min (pageCount) (start + w)
-              forM_ [start..end] $ \i ->
-                li !. "page" $ do
-                  let theclass = if i == pnCurrentPage then "current" else ""
+              forM_ [start..end] $ \i -> do
+                let theclass = if i == pnCurrentPage then "active" else ""
+                li !. theclass $ do
                   a ! hrefSet uri paramName (show i) !. theclass $
-                    toHtml (show i)
+                    toHtml (showCount i)
               when (end < pageCount) $
-                li !. "page" $ "…"
+                li !. "disabled" $ a "…"
               when (pnCurrentPage < pageCount) $ do
                 li !. "page" $ a ! hrefSet uri paramName (show (pnCurrentPage+1)) $
                   "Next"
@@ -77,3 +81,8 @@ pagination PN{pnURI=uri, pnPn=pn@Pagination{..}, pnResultsPerPage=perPage} =
 
         (//) = P.div
         pageCount = pnPageCount pn
+
+showCount :: (Show n,Integral n) => n -> String
+showCount = reverse . foldr merge "" . zip ("000,00,00,00"::String) . reverse . show where
+  merge (f,c) rest | f == ',' = "," ++ [c] ++ rest
+                   | otherwise = [c] ++ rest

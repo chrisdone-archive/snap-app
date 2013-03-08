@@ -12,8 +12,7 @@ module Snap.App.Types
        ,ControllerState(..)
        ,ModelState(..)
        ,AppConfig(..)
-       ,AppLiftModel(..)
-       ,Pagination(..))
+       ,AppLiftModel(..))
        where
 
 import Control.Applicative        (Applicative,Alternative)
@@ -22,7 +21,7 @@ import Control.Monad.Catch        (MonadCatchIO)
 import Control.Monad.Reader       (ReaderT,MonadReader)
 import Control.Monad.Trans        (MonadIO)
 import Database.PostgreSQL.Simple (Connection)
-import Network.URI (URI)
+
 import Snap.Core                  (Snap,MonadSnap)
 
 -- | The state accessible to the controller (DB/session stuff).
@@ -57,14 +56,14 @@ newtype Model config state a = Model {
     runModel :: ReaderT (ModelState config state) IO a
   } deriving (Monad,Functor,Applicative,MonadReader (ModelState config state),MonadIO)
 
--- | Pagination data.
-data Pagination = Pagination {
-   pnPage :: Integer
- , pnLimit :: Integer
- , pnURI :: URI
- , pnResults :: Integer
- , pnTotal :: Integer
-} deriving Show
+-- -- | Pagination data.
+-- data Pagination = Pagination {
+--    pnPage :: Integer
+--  , pnLimit :: Integer
+--  , pnURI :: URI
+--  , pnResults :: Integer
+--  , pnTotal :: Integer
+-- } deriving Show
 
 class AppConfig config where
   getConfigDomain :: config -> String

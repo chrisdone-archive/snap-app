@@ -26,6 +26,8 @@ import Control.Monad.Reader       (runReaderT)
 import Data.ByteString            (ByteString)
 import Data.ByteString.UTF8       (toString)
 import Data.Maybe
+import Data.String
+import Data.Pagination
 import Network.URI
 import Data.Text.Lazy             (Text,toStrict)
 import Database.PostgreSQL.Base   (withPoolConnection,withTransaction)
@@ -33,6 +35,7 @@ import Database.PostgreSQL.Simple (Pool)
 import Safe                       (readMay)
 import Text.Blaze                 (Html)
 import Text.Blaze.Renderer.Text   (renderHtml)
+import Text.Blaze.Pagination (PN(..))
 
 -- | Run a controller handler.
 runHandler :: s -> c -> Pool -> Controller c s () -> Snap ()
@@ -85,17 +88,18 @@ getStringMaybe name = do
   return pid
 
 -- | Get pagination data.
-getPagination :: AppConfig c => Controller c s Pagination
-getPagination = do
-  p <- getInteger "page" 1
-  limit <- getInteger "limit" 35
+getPagination :: AppConfig c => String -> Controller c s PN
+getPagination name = do
+  p <- getInteger (fromString (name ++ "_page")) 1
+  limit <- getInteger (fromString (name ++ "_per_page")) 35
   uri <- getMyURI
-  return Pagination { pnPage = max 1 p
-                    , pnLimit = max 1 (min 100 limit)
-                    , pnURI = uri
-                    , pnResults = 0
-                    , pnTotal = 0
-                    }
+  let pag = Pagination { pnCurrentPage = max 1 p
+                       , pnPerPage = max 1 (min 100 limit)
+                       , pnTotal = 0
+                       , pnName = "events"
+                       , pnShowDesc = True
+                       }
+  return (PN uri pag Nothing)
 
 getMyURI :: AppConfig c => Controller c s URI
 getMyURI = do
