@@ -1,5 +1,5 @@
 name:                snap-app
-version:             0.2.0
+version:             0.2.2
 synopsis:            Simple modules for writing apps with Snap, abstracted from hpaste.
 homepage:            Simple modules for writing apps with Snap, abstracted from hpaste.
 license:             BSD3
@@ -14,7 +14,7 @@ library
   hs-source-dirs:    src
   exposed-modules:   Snap.App, Snap.App.Types, Snap.App.Controller, Snap.App.Model, Snap.App.Migrate,
                      Data.Pagination, Text.Blaze.Extra, Text.Blaze.Pagination,
-                     Control.Monad.Env,
+                     Control.Monad.Env, Data.Monoid.Operator,
                      Network.URI.Params
   other-modules:     Control.Monad.Catch
   build-depends:     base >= 4 && <5,

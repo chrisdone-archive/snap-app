@@ -25,7 +25,6 @@ import Control.Monad.Env
 import Control.Monad.Reader       (runReaderT)
 import Data.ByteString            (ByteString)
 import Data.ByteString.UTF8       (toString)
-import Data.Maybe
 import Data.String
 import Data.Pagination
 import Network.URI
@@ -104,9 +103,10 @@ getPagination name = do
 getMyURI :: AppConfig c => Controller c s URI
 getMyURI = do
   domain <- env (getConfigDomain . controllerStateConfig)
-  fmap (fromJust .
-	parseURI .
-	(("http://" ++ domain) ++) .
-	toString .
-	rqURI)
-       getRequest
+  result <- fmap (parseURI . (("http://" ++ domain) ++) . toString . rqURI)
+                 getRequest
+  case result of
+    Nothing -> case parseURI ("http://" ++ domain) of
+      Nothing -> error $ "Unable to parse my own domain! It's this: " ++ domain
+      Just d -> return d
+    Just d -> return d
