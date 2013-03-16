@@ -18,6 +18,7 @@ module Snap.App.Controller
   where
 
 import Snap.Core
+import Snap.App.Model (Pool,withPoolConnection)
 import Snap.App.Types
 
 import Control.Applicative
@@ -29,8 +30,7 @@ import Data.String
 import Data.Pagination
 import Network.URI
 import Data.Text.Lazy             (Text,toStrict)
-import Database.PostgreSQL.Base   (withPoolConnection,withTransaction)
-import Database.PostgreSQL.Simple (Pool)
+import Database.PostgreSQL.Simple
 import Safe                       (readMay)
 import Text.Blaze                 (Html)
 import Text.Blaze.Renderer.Text   (renderHtml)
@@ -40,7 +40,6 @@ import Text.Blaze.Pagination (PN(..))
 runHandler :: s -> c -> Pool -> Controller c s () -> Snap ()
 runHandler st conf pool ctrl = do
   withPoolConnection pool $ \conn -> do
-    withTransaction conn $ do
       let state = ControllerState conf conn st
       -- Default to HTML, can be overridden.
       modifyResponse $ setContentType "text/html"

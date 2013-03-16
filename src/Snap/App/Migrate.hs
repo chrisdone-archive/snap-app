@@ -10,7 +10,7 @@ import Database.PostgreSQL.Simple (Only(..))
 import GHC.Int
 
 -- | Migrate the DB to the latest version.
-migrate :: Bool -> [(Int,Model c s Integer)] -> Model c s ()
+migrate :: Bool -> [(Int,Model c s Int64)] -> Model c s ()
 migrate create versions = go where
   go = do
     when create $ void $ ensureExists

@@ -1,5 +1,5 @@
 name:                snap-app
-version:             0.2.2
+version:             0.3.0
 synopsis:            Simple modules for writing apps with Snap, abstracted from hpaste.
 homepage:            Simple modules for writing apps with Snap, abstracted from hpaste.
 license:             BSD3
@@ -11,6 +11,7 @@ build-type:          Simple
 cabal-version:       >=1.8
 
 library
+  ghc-options:       -O2
   hs-source-dirs:    src
   exposed-modules:   Snap.App, Snap.App.Types, Snap.App.Controller, Snap.App.Model, Snap.App.Migrate,
                      Data.Pagination, Text.Blaze.Extra, Text.Blaze.Pagination,
@@ -20,7 +21,7 @@ library
   build-depends:     base >= 4 && <5,
                      snap-core,
                      network,
-                     pgsql-simple >= 0.1.2,
+                     postgresql-simple,
                      mtl,
                      blaze-html == 0.4.3.4,
                      safe,
