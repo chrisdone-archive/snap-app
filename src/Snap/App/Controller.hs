@@ -94,7 +94,7 @@ getPagination name = do
   let pag = Pagination { pnCurrentPage = max 1 p
                        , pnPerPage = max 1 (min 100 limit)
                        , pnTotal = 0
-                       , pnName = "events"
+                       , pnName = name
                        , pnShowDesc = True
                        }
   return (PN uri pag Nothing)
