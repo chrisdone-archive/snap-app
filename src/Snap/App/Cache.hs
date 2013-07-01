@@ -31,7 +31,7 @@ class CacheDir config where
   getCacheDir :: config -> FilePath
 
 -- | Cache conditionally.
-cacheIf :: (CacheDir c,Key key) => Bool -> key -> Controller c s (Maybe Html) -> Controller c s (Maybe Text)
+cacheIf :: (CacheDir c,Key key) => Bool -> key -> Controller c s (Maybe Markup) -> Controller c s (Maybe Text)
 cacheIf pred key generate =
   if pred
      then cache key generate
@@ -39,7 +39,7 @@ cacheIf pred key generate =
 
 -- | Generate and save into the cache, or retrieve existing from the
 -- | cache.
-cache :: (CacheDir c,Key key) => key -> Controller c s (Maybe Html) -> Controller c s (Maybe Text)
+cache :: (CacheDir c,Key key) => key -> Controller c s (Maybe Markup) -> Controller c s (Maybe Text)
 cache key generate = do
   tmpdir <- asks (getCacheDir . controllerStateConfig)
   let cachePath = tmpdir ++ "/" ++ keyToString key
@@ -85,7 +85,7 @@ io :: MonadIO m => IO a -> m a
 io = liftIO
 
 -- | View some HTML generator cached.
-viewCached :: (CacheDir c,Key key) => key -> Controller c s Html -> Controller c s ()
+viewCached :: (CacheDir c,Key key) => key -> Controller c s Markup -> Controller c s ()
 viewCached key generate = do
   text <- cache key (fmap Just generate)
   maybe (return ()) outputText text

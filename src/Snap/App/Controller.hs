@@ -32,7 +32,7 @@ import Network.URI
 import Data.Text.Lazy             (Text,toStrict)
 import Database.PostgreSQL.Simple
 import Safe                       (readMay)
-import Text.Blaze                 (Html)
+import Text.Blaze                 (Markup)
 import Text.Blaze.Renderer.Text   (renderHtml)
 import Text.Blaze.Pagination (PN(..))
 
@@ -48,7 +48,7 @@ runHandler st conf pool ctrl = do
 -- | Strictly renders HTML to Text before outputting it via Snap.
 --   This ensures that any lazy exceptions are caught by the Snap
 --   handler.
-output :: Html -> Controller c s ()
+output :: Markup -> Controller c s ()
 output html = outputText $ renderHtml $ html
 
 -- | Strictly renders text before outputting it via Snap.

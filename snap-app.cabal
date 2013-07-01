@@ -1,5 +1,5 @@
 name:                snap-app
-version:             0.3.2
+version:             0.4.0
 synopsis:            Simple modules for writing apps with Snap, abstracted from hpaste.
 homepage:            Simple modules for writing apps with Snap, abstracted from hpaste.
 license:             BSD3
@@ -24,7 +24,8 @@ library
                      network,
                      postgresql-simple,
                      mtl,
-                     blaze-html == 0.4.3.4,
+                     blaze-html >= 0.6,
+                     blaze-markup >= 0.5,
                      safe,
                      text,
                      utf8-string,
