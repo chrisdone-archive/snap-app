@@ -6,7 +6,6 @@ import Snap.App.Types
 import Snap.App.Model
 import Control.Monad
 import Control.Monad.Trans
-import Database.PostgreSQL.Simple (Only(..))
 import GHC.Int
 
 -- | Migrate the DB to the latest version.

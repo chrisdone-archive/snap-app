@@ -56,7 +56,7 @@ pagination PN{pnURI=uri, pnPn=pn@Pagination{..}, pnResultsPerPage=perPage} =
           div !. "pages" $ do
             ul !. "pages-list" $ do
               when (pnCurrentPage > 1) $ do
-                li !. "page" $ a ! hrefSet uri paramName (show 1) $
+                li !. "page" $ a ! hrefSet uri paramName "1" $
                   "First"
                 li !. "page" $ a ! hrefSet uri paramName (show (pnCurrentPage-1)) $
                   "Previous"

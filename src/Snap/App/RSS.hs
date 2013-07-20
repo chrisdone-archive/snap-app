@@ -12,7 +12,6 @@ import           Text.Feed.Export
 import           Text.Feed.Types
 import           Text.RSS.Syntax
 import           Text.XML.Light
-import           Text.XML.Light
 
 -- | Output the given XML element.
 outputRSS :: String -> String -> [(UTCTime,Text,Text,Text)] -> Controller c s ()
@@ -25,10 +24,10 @@ makeFeed title link = xmlFeed . RSSFeed . makeRSS where
                { rssChannel = makeChannel qs }
   makeChannel qs = (nullChannel title link)
                    { rssItems = map makeItem qs }
-  makeItem (time,title,desc,link) =
-    (nullItem (T.unpack title))
+  makeItem (time,itemtitle,desc,itemlink) =
+    (nullItem (T.unpack itemtitle))
     { rssItemPubDate = return (toPubDate time)
     , rssItemDescription = return (T.unpack desc)
-    , rssItemLink = return (T.unpack link)
+    , rssItemLink = return (T.unpack itemlink)
     }
   toPubDate = formatTime defaultTimeLocale "%a, %d %b %Y %H:%M:%S UT"
