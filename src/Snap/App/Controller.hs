@@ -30,10 +30,9 @@ import Data.String
 import Data.Pagination
 import Network.URI
 import Data.Text.Lazy             (Text,toStrict)
-import Database.PostgreSQL.Simple
 import Safe                       (readMay)
 import Text.Blaze                 (Markup)
-import Text.Blaze.Renderer.Text   (renderHtml)
+import Text.Blaze.Html.Renderer.Text (renderHtml)
 import Text.Blaze.Pagination (PN(..))
 
 -- | Run a controller handler.

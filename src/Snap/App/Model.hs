@@ -113,4 +113,4 @@ data PoolState = PoolState {
   , poolConnectInfo :: ConnectInfo
   }
 
-newtype Pool = Pool { unPool :: MVar PoolState }
+newtype Pool = Pool (MVar PoolState)

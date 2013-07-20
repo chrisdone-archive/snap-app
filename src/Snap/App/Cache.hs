@@ -20,7 +20,7 @@ import           Snap.App
 import           System.Directory
 import           System.FilePath
 import           Text.Blaze
-import           Text.Blaze.Renderer.Text
+import           Text.Blaze.Html.Renderer.Text
 
 -- | A key for the cache.
 class Key key where
