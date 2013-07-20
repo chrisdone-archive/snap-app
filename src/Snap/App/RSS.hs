@@ -13,18 +13,20 @@ import           Text.XML.Light
 import           Text.XML.Light
 
 -- | Output the given XML element.
-outputRSS :: String -> String -> [(UTCTime,Text,Text)] -> Controller c s ()
+outputRSS :: String -> String -> [(UTCTime,Text,Text,Text)] -> Controller c s ()
 outputRSS title link = outputXML . makeFeed title link
 
 -- | Make a simple RSS feed.
-makeFeed :: String -> String -> [(UTCTime,Text,Text)] -> Element
+makeFeed :: String -> String -> [(UTCTime,Text,Text,Text)] -> Element
 makeFeed title link = xmlFeed . RSSFeed . makeRSS where
   makeRSS qs = (nullRSS title link)
                { rssChannel = makeChannel qs }
   makeChannel qs = (nullChannel title link)
                    { rssItems = map makeItem qs }
-  makeItem (time,title,desc) = (nullItem (T.unpack title))
-                               { rssItemPubDate = return (toPubDate time)
-                               , rssItemDescription = return (T.unpack desc)
-                               }
+  makeItem (time,title,desc,link) =
+    (nullItem (T.unpack title))
+    { rssItemPubDate = return (toPubDate time)
+    , rssItemDescription = return (T.unpack desc)
+    , rssItemLink = return (T.unpack link)
+    }
   toPubDate = formatTime defaultTimeLocale "%a, %d %b %Y %H:%M:%S UT"
