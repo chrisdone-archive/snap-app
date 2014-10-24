@@ -1,7 +1,7 @@
 name:                snap-app
 version:             0.6.0
 synopsis:            Simple modules for writing apps with Snap, abstracted from hpaste.
-homepage:            Simple modules for writing apps with Snap, abstracted from hpaste.
+homepage:            https://github.com/chrisdone/snap-app
 license:             BSD3
 license-file:        LICENSE
 author:              Chris Done
